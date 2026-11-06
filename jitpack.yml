@@ -1,0 +1,5 @@
+# JitPack builds the artifact on first request for a tag. Local publish only.
+jdk:
+  - openjdk21
+install:
+  - ./gradlew --no-daemon :identified-sdk:publishReleasePublicationToMavenLocal
