@@ -11,7 +11,7 @@ selfie, proof of address, review, status and correction flow as the iOS SDK.
 Maven Central is already in a default Android project's repositories. Add:
 
 ```kotlin
-dependencies { implementation("cc.identified:identified-sdk:0.1.1") }
+dependencies { implementation("io.github.fening:identified-sdk:0.1.1") }
 ```
 
 ### JitPack (still supported)
