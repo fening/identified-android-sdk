@@ -5,11 +5,13 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.parcelize")
     id("maven-publish")
+    id("signing")
 }
-// Coordinates a developer puts in Gradle. Set once; the git tag for a release must match `version`.
-// Group id is pending owner confirmation (cc.identified needs a DNS-verified Central namespace).
+// Coordinates a developer puts in Gradle: cc.identified:identified-sdk:<version>. The git tag for a
+// release must match `version`. `cc.identified` is the Central Portal namespace verified through
+// the identified.cc DNS TXT record. JitPack ignores `group` and serves com.github.fening instead.
 group = "cc.identified"
-version = "0.1.0"
+version = "0.1.1"
 android {
     namespace = "cc.identified.sdk"
     compileSdk = 36
@@ -27,7 +29,7 @@ android {
     kotlinOptions { jvmTarget = "17" }
     testOptions { unitTests.isIncludeAndroidResources = true }
     lint { abortOnError = true }
-    publishing { singleVariant("release") { withSourcesJar() } }
+    publishing { singleVariant("release") { withSourcesJar(); withJavadocJar() } }
 }
 dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2024.12.01")
@@ -73,6 +75,7 @@ publishing {
                 name.set("Identified Android SDK")
                 description.set("Native Android identity verification flow for the Identified API")
                 url.set("https://identified.cc")
+                inceptionYear.set("2026")
                 licenses {
                     license {
                         name.set("MIT License")
@@ -80,19 +83,42 @@ publishing {
                         distribution.set("repo")
                     }
                 }
-                developers { developer { id.set("fening"); name.set("Identified") } }
+                developers {
+                    developer {
+                        id.set("fening")
+                        name.set("Kwadwo Fening Okai")
+                        url.set("https://github.com/fening")
+                    }
+                }
                 scm {
                     connection.set("scm:git:https://github.com/fening/identified-android-sdk.git")
+                    developerConnection.set("scm:git:ssh://git@github.com/fening/identified-android-sdk.git")
                     url.set("https://github.com/fening/identified-android-sdk")
+                }
+                issueManagement {
+                    system.set("GitHub")
+                    url.set("https://github.com/fening/identified-android-sdk/issues")
                 }
             }
         }
     }
     repositories {
-        // Local staging only. Nothing here uploads anywhere.
+        // Local staging only. Nothing here uploads anywhere: scripts/publish-central.sh zips this
+        // directory and uploads it to the Central Portal as a bundle the owner then releases.
         maven {
             name = "releaseStaging"
             url = uri(layout.buildDirectory.dir("release-repository"))
         }
+    }
+}
+
+// Signing is opt-in so JitPack and `publishToMavenLocal` keep working without keys.
+// Enable with `-Psigning.gnupg.keyName=<key id>` (or the same line in ~/.gradle/gradle.properties).
+// Signs through the local gpg agent, so the passphrase is only ever typed into pinentry.
+val signingKeyName = providers.gradleProperty("signing.gnupg.keyName")
+if (signingKeyName.isPresent) {
+    signing {
+        useGpgCmd()
+        sign(publishing.publications["release"])
     }
 }
