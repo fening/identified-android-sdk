@@ -11,12 +11,11 @@ published version can never be changed or deleted, so a bad build means a new ve
 2. **Account > Generate User Token**. Store `<username>:<password>` in the macOS keychain, typed
    at the prompt (never on a command line):
    `security add-generic-password -s identified-central-portal -a "$USER" -w`
-3. Create a signing key and publish its public half:
-   `gpg --quick-generate-key "Identified SDK Releases <your email>" rsa3072 sign 2y`
-   (pinentry asks for the passphrase), then
-   `gpg --keyserver keyserver.ubuntu.com --send-keys <fingerprint>` and
-   `gpg --armor --export <fingerprint>` uploaded at <https://keys.openpgp.org/upload> (confirm the
-   email it sends). Central checks the key against public keyservers.
+3. Signing key: reuse the existing "Zuno SDK Releases" key (fingerprint
+   `9C4468692B0A9261E43B74E62BC529B7F9329230`, expires 2028-11-02). It is already on
+   keyserver.ubuntu.com and keys.openpgp.org and its secret half is in the local gpg keyring.
+   `export GPG_KEY_ID=9C4468692B0A9261E43B74E62BC529B7F9329230`.
+   The same account and key also publish `io.github.fening:zuno-sdk`.
 
 ## Each release
 
