@@ -7,10 +7,10 @@ plugins {
     id("maven-publish")
     id("signing")
 }
-// Coordinates a developer puts in Gradle: io.github.fening:identified-sdk:<version>. The git tag for
-// a release must match `version`. `io.github.fening` is the Central Portal namespace already
-// verified for the zuno-sdk release. JitPack ignores `group` and serves com.github.fening instead.
-group = "io.github.fening"
+// Coordinates a developer puts in Gradle: cc.identified:identified-sdk:<version>. The git tag for a
+// release must match `version`. `cc.identified` is the Central Portal namespace verified through
+// the identified.cc DNS TXT record. JitPack ignores `group` and serves com.github.fening instead.
+group = "cc.identified"
 version = "0.1.1"
 android {
     namespace = "cc.identified.sdk"

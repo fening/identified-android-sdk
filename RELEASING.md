@@ -1,19 +1,22 @@
 # Releasing to Maven Central
 
-Coordinates: `io.github.fening:identified-sdk:<version>`. Central releases are immutable: a
+Coordinates: `cc.identified:identified-sdk:<version>`. Central releases are immutable: a
 published version can never be changed or deleted, so a bad build means a new version.
 
 ## One-time setup (owner)
 
-Shared with the Zuno SDK, which is already on Central under the same namespace and key:
-
-1. Namespace `io.github.fening` is verified at <https://central.sonatype.com> (Namespaces). Nothing to add.
+1. Sign in at <https://central.sonatype.com> (GitHub login is fine) and add the namespace
+   `cc.identified`. Add the TXT record it shows to the `identified.cc` zone in Cloudflare, then
+   click **Verify Namespace**.
 2. **Account > Generate User Token**. Store `<username>:<password>` in the macOS keychain, typed
    at the prompt (never on a command line):
    `security add-generic-password -s identified-central-portal -a "$USER" -w`
-3. Signing key: the existing "Zuno SDK Releases" key (fingerprint
-   `9C4468692B0A9261E43B74E62BC529B7F9329230`, expires 2028-11-02) is already on keyserver.ubuntu.com
-   and keys.openpgp.org. `export GPG_KEY_ID=9C4468692B0A9261E43B74E62BC529B7F9329230`.
+3. Create a signing key and publish its public half:
+   `gpg --quick-generate-key "Identified SDK Releases <your email>" rsa3072 sign 2y`
+   (pinentry asks for the passphrase), then
+   `gpg --keyserver keyserver.ubuntu.com --send-keys <fingerprint>` and
+   `gpg --armor --export <fingerprint>` uploaded at <https://keys.openpgp.org/upload> (confirm the
+   email it sends). Central checks the key against public keyservers.
 
 ## Each release
 
@@ -27,9 +30,9 @@ Shared with the Zuno SDK, which is already on Central under the same namespace a
    <https://central.sonatype.com/publishing/deployments>). `FAILED` lists the rule that broke.
 4. `scripts/publish-central.sh release <id>`, or click **Publish** in the portal. Irreversible.
 5. Wait for sync (usually 10-30 minutes), then verify: the file
-   `https://repo1.maven.org/maven2/io/github/fening/identified-sdk/<version>/identified-sdk-<version>.pom`
+   `https://repo1.maven.org/maven2/cc/identified/identified-sdk/<version>/identified-sdk-<version>.pom`
    returns 200, and a scratch Gradle project with only `mavenCentral()` resolves
-   `io.github.fening:identified-sdk:<version>`.
+   `cc.identified:identified-sdk:<version>`.
 6. Check JitPack still builds the tag: <https://jitpack.io/#fening/identified-android-sdk>.
 
 ## Dry run (no credentials, no network upload)
