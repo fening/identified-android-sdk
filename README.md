@@ -4,24 +4,31 @@ Native Kotlin/Compose identity verification for **Android 7.0 / API 24+**.
 The SDK runs the same consent, name, ID details, document capture, three-pose
 selfie, proof of address, review, status and correction flow as the iOS SDK.
 
-## Install (JitPack)
+## Install
 
-Add JitPack to the host app's `settings.gradle.kts`, then the dependency:
+### Maven Central
+
+Maven Central is already in a default Android project's repositories. Add:
+
+```kotlin
+dependencies { implementation("cc.identified:identified-sdk:0.1.1") }
+```
+
+### JitPack (still supported)
 
 ```kotlin
 dependencyResolutionManagement {
     repositories { google(); mavenCentral(); maven("https://jitpack.io") }
 }
+dependencies { implementation("com.github.fening:identified-android-sdk:0.1.1") }
 ```
 
-```kotlin
-dependencies { implementation("com.github.fening:identified-android-sdk:0.1.0") }
-```
+Both coordinates serve the same code. Moving from JitPack to Central is a one-line
+change; `0.1.0` exists on JitPack only.
 
 The host still declares the Android library, Kotlin Android, Compose compiler,
 serialization and Parcelize plugins (the example uses AGP 8.10.1, Kotlin 2.2.21).
-The SDK's own dependencies come transitively. A Maven Central release is planned
-and will use a different coordinate.
+The SDK's own dependencies come transitively.
 
 ## Validation status
 
